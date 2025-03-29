@@ -30,23 +30,27 @@ char	*ft_strjoin(int size, char **strs, char *sep)
 {
 	char	*result;
 	int		total_len;
-	int		i;
+	char	*ptr;
+	int			i;
 
-	if (size == 0)
-		return (strdup(""));  /* 空输入返回可释放的空字符串 */
 	total_len = get_totallen(size, strs, sep);
 	result = (char *)malloc(total_len);
 	if (!result)
 		return (NULL);
-	result[0] = '\0';
+	ptr = result;
 	i = 0;
 	while (i < size)
 	{
-		strcat(result, strs[i]);
+		strcpy(ptr, strs[i]);
+		ptr += strlen(strs[i]);
 		if (i < size - 1)
-			strcat(result, sep);
+		{
+			strcpy(ptr, sep);
+			ptr += strlen(sep);
+		}
 		i++;
 	}
+	*ptr = '\0';
 	return (result);
 }
 
@@ -55,20 +59,22 @@ int	main(int argc, char **argv)
 	char	*separator;
 	char	*result;
 
-	if (argc >= 2)
+	if (argc < 3)
 	{
-		separator = argv[1];
-		result = ft_strjoin(argc - 2, &argv[2], separator);
-		if (result)
-		{
-			printf("%s\n", result);
-			free(result);
-		}
-		else
-		{
-			fprintf(stderr, "Error: Memory allocation failed\n");
-			return (1);
-		}
+		fprintf(stderr, "Uso: %s <sep> <str1> [str2 ... strN]\n", argv[0]);
+		return (1);
+	}
+	separator = argv[1];
+	result = ft_strjoin(argc - 2, &argv[2], separator);
+	if (result)
+	{
+		printf("%s\n", result);
+		free(result);
+	}
+	else
+	{
+		fprintf(stderr, "Error: Memory allocation failed\n");
+		return (1);
 	}
 	return (0);
 }

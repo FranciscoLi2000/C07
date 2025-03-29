@@ -1,16 +1,72 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <limits.h>
+#include <ctype.h>
 
-char	*ft_convert_base(char *nbr, char *base_from, char *base_to)
+static int	get_base(char *base)
 {
-	char	*new_nbr;
-	int		n;
-	int		base_from;
-	int		base_to;
+    int			i;
+	int			j;
 
-	while (isspace(nbr))
-		nbr++;
-	base_from = strlen(base_from);
-	base_to = strlen(base_to);
-	n = atoi(nbr);
+    if (!base[0] || !base[1])
+        return (0);
+	i = 0;
+    while (base[i] != '\0')
+    {
+        if (!isdigit(base[i]))
+            return (0);
+		j = i + 1;
+        while (base[j] != '\0')
+		{
+            if (base[i] == base[j])
+                return (0);
+			j++;
+		}
+		i++;
+    }
+    return (i);
+}
+
+int ft_atoi_base(char *str, char *base)
+{
+    int         nb;
+    int         sign;
+    int         base_len;
+
+    nb = 0;
+    sign = 1;
+    base_len = get_base(base);
+    if (base_len < 2)
+        return (0);
+    while (isspace(*str))
+        str++;
+    if (*str == '-' || *str == '+')
+    {
+        if (*str++ == '-')
+            sign = -1;
+        sign = 1;
+    }
+    while (*str)
+    {
+        while (*base != '\0' && *base != *str)
+            base++;
+        if (!*base)
+            break ;
+        nb = nb * base_len + *base;
+        str++;
+    }
+    return (nb * sign);
+}
+
+static int	count_numlen(int n)
+{
+	int			count;
+
+	count = 0;
+	if (n <= 0)
+		count = 1;
+	while (n)
+	{
+		count++;
+		n /= 10;
+	}
+}
