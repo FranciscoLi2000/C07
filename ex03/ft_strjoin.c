@@ -1,54 +1,51 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-/* strjoin: 连接多个字符串，使用指定的分隔符
- * size 字符串数量
- * strs 字符串数组
- * sep 分隔符
- * return 连接后的新字符串（需 free 释放） */
-static int	get_totallen(int size, char **strs, char *sep)
+
+char	*ft_strjoin(const char *s1, const char *s2)
 {
-	int	sep_len;
-	int	total_len;
-	int	i;
-	
-	if (size == 0)
-		return (0);
-	sep_len = strlen(sep);
-	total_len = 0;
-	i = 0;
-	while (i < size)
-	{
-		total_len += strlen(strs[i]);
-		i++;
-	}
-	total_len += sep_len * (size - 1) + 1;
-	return (total_len);
+	size_t	len1;
+	size_t	len2;
+	char		*result;
+
+	if (s1 != NULL)
+		len1 = strlen(s1);
+	else
+		len1 = 0;
+	if (s2 != NULL)
+		len2 = strlen(s2);
+	else
+		len2 = 0;
+	result = (char *)malloc(len1 + len2 + 1);
+	if (result == NULL)
+		return (NULL);
+	if (s1 != NULL)
+		memcpy(result, s1, len1);
+	if (s2 != NULL)
+		memcpy(result + len1, s2, len2);
+	result[len1 + len2] = '\0';
+	return (result);
 }
 
-char	*ft_strjoin(int size, char **strs, char *sep)
+int	main(void)
 {
-	char	*result;
-	char	*str;
-	int		total_len;
-	int		i;
+	char	s1[100];
+	char	s2[100];
+	char	*joined;
 
-	total_len = get_totallen(size, strs, sep);
-	result = (char *)malloc(total_len);
-	if (!result)
-		return (NULL);
-	str = result;
-	i = 0;
-	while (i < size)
+	printf("Enter first string.\n");
+	fgets(s1, sizeof(s1), stdin);
+	s1[strcspn(s1, "\n")] = '\0';
+	printf("Enter second string.\n");
+	fgets(s2, sizeof(s2), stdin);
+	s2[strcspn(s2, "\n")] = '\0';
+	joined = ft_strjoin(s1, s2);
+	if (joined == NULL)
 	{
-		strcpy(str, strs[i]);
-		str += strlen(strs[i]);
-		if (i < size - 1)
-		{
-			strcpy(str, sep);
-			str += strlen(sep);
-		}
-		i++;
+		printf("Error: Memory allocation failed.\n");
+		return (1);
 	}
-	str[i] = '\0';
-	return (result);
+	printf("Result: %s\n", joined);
+	free(joined);
+	return (0);
 }
